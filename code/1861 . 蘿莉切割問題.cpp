@@ -1,34 +1,56 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define int long long
 #define ll long long
 
+const int V = 10000;
+const int N = 100005;
 
-void sol(int n){
-    priority_queue<int, vector<int>, greater<>> pq;
-    for(int i=1; i<=n; i++){
+int n;
+int cnt[V+1];
+int b[N];
+
+void sol(){
+    memset(cnt, 0, sizeof(cnt));
+
+    for(int i=0; i<n; i++){
         int x;
-        cin>>x;
-        pq.push(x);
+        cin >> x;
+        cnt[x]++;
     }
 
-    int ans = 0;
-    while(pq.size() > 1){
-        int a = pq.top(); pq.pop();
-        int b = pq.top(); pq.pop();
+    int p = 1;
+    int l = 0, r = 0;
 
-        ans += (a+b);
-        pq.push(a+b);
+    auto get_min = [&]() -> int {
+        while(p <= V && cnt[p] == 0) p++;
+
+        if(p > V)
+            return b[l++];
+
+        if(l == r || p <= b[l]){
+            cnt[p]--;
+            return p;
+        }
+
+        return b[l++];
+    };
+
+    ll ans = 0;
+
+    for(int i=0; i<n-1; i++){
+        int x = get_min();
+        int y = get_min();
+
+        ans += x + y;
+        b[r++] = x + y;
     }
-    
+
     cout << ans << '\n';
 }
 
 signed main(){
     ios::sync_with_stdio(false);
     cin.tie(0);
-    
-    int n;
-    while(cin>>n) sol(n);
 
+    while(cin >> n) sol();
 }
